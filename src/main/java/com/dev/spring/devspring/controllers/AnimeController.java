@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.dev.spring.devspring.domain.Anime;
+import com.dev.spring.devspring.dtos.AnimePostRequestBody;
+import com.dev.spring.devspring.dtos.AnimePutRequestBody;
 import com.dev.spring.devspring.services.AnimeService;
 import com.dev.spring.devspring.utils.DateUtil;
 
@@ -38,12 +40,12 @@ public class AnimeController {
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<Anime> findById(@PathVariable long id) {
-        return new ResponseEntity<>(animeService.findById(id), HttpStatus.OK);
+        return new ResponseEntity<>(animeService.findByIdOrThrowBadRequestException(id), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Anime> save(@RequestBody Anime anime) {
-        return new ResponseEntity<>(animeService.save(anime), HttpStatus.CREATED);
+    public ResponseEntity<Anime> save(@RequestBody AnimePostRequestBody animePostRequestBody) {
+        return new ResponseEntity<>(animeService.save(animePostRequestBody), HttpStatus.CREATED);
     }
 
     @DeleteMapping(path = "/{id}")
@@ -53,8 +55,8 @@ public class AnimeController {
     }
 
     @PutMapping
-    public ResponseEntity<Anime> update(@RequestBody Anime anime) {
-        animeService.update(anime);
+    public ResponseEntity<Anime> update(@RequestBody AnimePutRequestBody animePutRequestBody) {
+        animeService.update(animePutRequestBody);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
