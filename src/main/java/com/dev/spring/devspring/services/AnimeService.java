@@ -3,10 +3,13 @@ package com.dev.spring.devspring.services;
 import com.dev.spring.devspring.domain.Anime;
 import com.dev.spring.devspring.dtos.AnimePostRequestBody;
 import com.dev.spring.devspring.dtos.AnimePutRequestBody;
+import com.dev.spring.devspring.exceptions.BadRequestException;
+import com.dev.spring.devspring.mapper.AnimeMapper;
 import com.dev.spring.devspring.repositories.AnimeRepository;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import lombok.RequiredArgsConstructor;
@@ -21,14 +24,18 @@ public class AnimeService {
     public List<Anime> listAll() {
         return animeRepository.findAll();
     }
+    public List<Anime> findByName(String name) {
+    	return animeRepository.findByName(name);
+    }
 
     public Anime findByIdOrThrowBadRequestException(long id) {
         return animeRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Anime ID not Found"));
+                .orElseThrow(() -> new BadRequestException("Anime ID not Found"));
     }
-
+    
+    @Transactional
     public Anime save(AnimePostRequestBody animePostRequestBody) {
-        return animeRepository.save(Anime.builder().name(animePostRequestBody.getName()).build());
+        return animeRepository.save(AnimeMapper.INSTANCE.toAnime(animePostRequestBody));
     }
 
     public void delete(long id) {
@@ -37,10 +44,8 @@ public class AnimeService {
 
     public void update(AnimePutRequestBody animePutRequestBody) {
         Anime savedAnime = findByIdOrThrowBadRequestException(animePutRequestBody.getId());
-        Anime anime = Anime.builder()
-                .id(savedAnime.getId())
-                .name(savedAnime.getName())
-                .build();
+        Anime anime = AnimeMapper.INSTANCE.toAnime(animePutRequestBody);
+        anime.setId(savedAnime.getId());
         animeRepository.save(anime);
     }
 }
