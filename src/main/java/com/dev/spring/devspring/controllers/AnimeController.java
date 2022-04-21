@@ -12,6 +12,7 @@ import com.dev.spring.devspring.dtos.AnimePutRequestBody;
 import com.dev.spring.devspring.services.AnimeService;
 import com.dev.spring.devspring.utils.DateUtil;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -39,10 +40,13 @@ public class AnimeController {
 
     private final DateUtil dateUtil;
     private final AnimeService animeService;
-
+    
+    //Fingir que é uma operação muito custosa com Thread para usar o cache
     @GetMapping
-    public ResponseEntity<Page<Anime>> list(Pageable pageable) {
+    @Cacheable("cache-animes")
+    public ResponseEntity<Page<Anime>> list(Pageable pageable) throws InterruptedException {
         log.info(dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
+        Thread.sleep(6000);
         return ResponseEntity.ok(animeService.listAll(pageable));
     }
     
