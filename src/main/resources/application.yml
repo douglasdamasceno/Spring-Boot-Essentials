@@ -3,6 +3,10 @@ server:
     include-stacktrace: never
 
 spring:
+  #add por causa da documentação
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
   datasource:
     url: jdbc:mysql://localhost:3306/anime?useSSL=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
     username: root
@@ -18,7 +22,7 @@ spring:
       idle-timeout: 1000
       #salvando dados no banco automaticamente
       auto-commit: true
-      
+
       
   jpa:
     hibernate:
