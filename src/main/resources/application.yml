@@ -7,6 +7,19 @@ spring:
     url: jdbc:mysql://localhost:3306/anime?useSSL=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
     username: root
     password: root
+    hikari:
+      #número máximo de milissegundos que um cliente aguardará por um conexão
+      connection-timeout: 2000
+      #número mínimo de conexão inativas mantidas pelo HikariCP em Conjunto de conexões
+      minimum-idle: 10 
+      #número máximo do pool de conexões
+      maximum-pool-size: 40
+      #Tempo ociosos para conexão
+      idle-timeout: 1000
+      #salvando dados no banco automaticamente
+      auto-commit: true
+      
+      
   jpa:
     hibernate:
       ddl-auto: update
