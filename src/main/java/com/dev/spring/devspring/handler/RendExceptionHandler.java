@@ -21,8 +21,10 @@ import com.dev.spring.devspring.exceptions.BadRequestExceptionDetails;
 import com.dev.spring.devspring.exceptions.ExceptionDetails;
 import com.dev.spring.devspring.exceptions.ValidationExceptionDetails;
 
+
 @ControllerAdvice
 public class RendExceptionHandler extends ResponseEntityExceptionHandler {
+	
 	@ExceptionHandler(BadRequestException.class)
 	public ResponseEntity<BadRequestExceptionDetails> handleBadRequestException(BadRequestException bre){
 		return new ResponseEntity<>(
@@ -35,26 +37,26 @@ public class RendExceptionHandler extends ResponseEntityExceptionHandler {
 				.build(),HttpStatus.BAD_REQUEST
 		);
 	}
-	
-	@Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
+		
+	 @Override
+	    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+	            MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
+	        List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
 
-        String fields = fieldErrors.stream().map(FieldError::getField).collect(Collectors.joining(", "));
-        String fieldsMessage = fieldErrors.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(", "));
+	        String fields = fieldErrors.stream().map(FieldError::getField).collect(Collectors.joining(", "));
+	        String fieldsMessage = fieldErrors.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(", "));
 
-        return new ResponseEntity<>(
-                ValidationExceptionDetails.builder()
-                        .timestamp(LocalDateTime.now())
-                        .status(HttpStatus.BAD_REQUEST.value())
-                        .title("Bad Request Exception, Invalid Fields")
-                        .details("Check the field(s) error")
-                        .developerMessage(exception.getClass().getName())
-                        .fields(fields)
-                        .fieldsMessage(fieldsMessage)
-                        .build(), HttpStatus.BAD_REQUEST);
-    }
+	        return new ResponseEntity<>(
+	                ValidationExceptionDetails.builder()
+	                        .timestamp(LocalDateTime.now())
+	                        .status(HttpStatus.BAD_REQUEST.value())
+	                        .title("Bad Request Exception, Invalid Fields")
+	                        .details("Check the field(s) error")
+	                        .developerMessage(exception.getClass().getName())
+	                        .fields(fields)
+	                        .fieldsMessage(fieldsMessage)
+	                        .build(), HttpStatus.BAD_REQUEST);
+	    }
 		
 	@Override
     protected ResponseEntity<Object> handleExceptionInternal(

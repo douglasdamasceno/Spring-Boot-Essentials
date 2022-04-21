@@ -38,7 +38,7 @@ public class AnimeService {
     public Anime save(AnimePostRequestBody animePostRequestBody) {
         return animeRepository.save(AnimeMapper.INSTANCE.toAnime(animePostRequestBody));
     }
-
+    
     public void delete(long id) {
         animeRepository.delete(findByIdOrThrowBadRequestException(id));
     }
@@ -48,5 +48,9 @@ public class AnimeService {
         anime.setId(savedAnime.getId());
         animeRepository.save(anime);
     }
+    
+	public Anime saveAnimeComUser(Anime newAnime) {
+		return animeRepository.save(newAnime);
+	}
 	
 }
