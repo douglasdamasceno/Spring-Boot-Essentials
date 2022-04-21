@@ -39,6 +39,11 @@ public class UserController {
     public ResponseEntity<List<User>> listAll() {
     	return ResponseEntity.ok(userService.listAll());
     }
+    //opcional mudar url
+    @GetMapping(value = "/v2/", headers = "X-API-Version=v2")
+    public ResponseEntity<List<User>> listAllV2() {
+    	return ResponseEntity.ok(userService.listAll());
+    }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<User> findById(@PathVariable long id) {
