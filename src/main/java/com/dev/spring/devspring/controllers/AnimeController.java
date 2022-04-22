@@ -12,6 +12,8 @@ import com.dev.spring.devspring.dtos.AnimePutRequestBody;
 import com.dev.spring.devspring.services.AnimeService;
 import com.dev.spring.devspring.utils.DateUtil;
 
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,16 +42,22 @@ public class AnimeController {
 
     private final DateUtil dateUtil;
     private final AnimeService animeService;
-    
+
+
     //Fingir que é uma operação muito custosa com Thread para usar o cache
-    @GetMapping
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retorna a lista de pessoa"),
+            @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso"),
+            @ApiResponse(code = 500, message = "Foi gerada uma exceção"),
+    })
+    @GetMapping(produces="application/json")
     @Cacheable("cache-animes")
     public ResponseEntity<Page<Anime>> list(Pageable pageable) throws InterruptedException {
         log.info(dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
         Thread.sleep(6000);
         return ResponseEntity.ok(animeService.listAll(pageable));
     }
-    
+
     @CrossOrigin
     @GetMapping(path = "/all")
     public ResponseEntity<List<Anime>> listAll() {
@@ -66,7 +74,7 @@ public class AnimeController {
     	return ResponseEntity.ok(animeService.findByName(name));
     }
 
-    @PostMapping
+    @PostMapping(consumes="application/json")
     public ResponseEntity<Anime> save(@RequestBody @Valid AnimePostRequestBody animePostRequestBody) {
         return new ResponseEntity<>(animeService.save(animePostRequestBody), HttpStatus.CREATED);
     }
